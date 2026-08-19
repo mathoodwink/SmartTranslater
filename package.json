@@ -1,0 +1,97 @@
+{
+  "name": "smarttranslater",
+  "version": "1.0.0",
+  "description": "SmartTranslater — hotkey translator RU<->EN for Windows.",
+  "author": "mathoodwink",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mathoodwink/SmartTranslater.git"
+  },
+  "homepage": "https://github.com/mathoodwink/SmartTranslater",
+  "type": "module",
+  "main": "dist-electron/electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on http://127.0.0.1:5173 && electron .\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.electron.json --noEmit",
+    "build": "npm run typecheck && vite build && tsc -p tsconfig.electron.json",
+    "preview": "vite preview",
+    "start": "electron .",
+    "dist": "npm run build && electron-builder --publish never && node scripts/package-portable.mjs",
+    "release": "npm run build && electron-builder --publish always && node scripts/package-portable.mjs"
+  },
+  "build": {
+    "appId": "com.smarttranslater.app",
+    "productName": "SmartTranslater",
+    "files": [
+      "renderer/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "SmartTranslater",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "mathoodwink",
+        "repo": "SmartTranslater"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.0.5",
+    "concurrently": "^10.0.5",
+    "electron": "^43.4.1",
+    "electron-builder": "^26.15.3",
+    "tsx": "^4.23.12",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0",
+    "wait-on": "^9.1.0"
+  },
+  "dependencies": {
+    "@vitalets/google-translate-api": "^9.2.1",
+    "electron-updater": "^6.6.2",
+    "koffi": "^3.1.5",
+    "node-global-key-listener": "^0.3.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  }
+}
